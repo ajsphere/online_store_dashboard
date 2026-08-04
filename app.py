@@ -19,9 +19,10 @@ from src.cancelled_analysis import render_cancelled_dashboard
 
 from src.geographical_analysis import (
     prepare_country_data,
-    revenue_by_country_map,
-    top_countries_revenue,
-    customers_by_country
+    get_geographical_kpis,
+    revenue_map,
+    top_countries_chart,
+    customers_country_chart
 )
 
 
@@ -652,26 +653,55 @@ st.subheader("🌍 Geographical Analysis")
 
 country_data = prepare_country_data(df_sales)
 
+geo_kpis = get_geographical_kpis(country_data)
+
+
+# KPI CARDS
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.metric(
+        "🌎 Countries",
+        geo_kpis["countries"]
+    )
+
+with col2:
+    st.metric(
+        "🏆 Top Country",
+        geo_kpis["top_country"]
+    )
+
+with col3:
+    st.metric(
+        "💷 Geographic Revenue",
+        f"GBP {geo_kpis['revenue']:,.2f}"
+    )
+
+
+# WORLD MAP
+
+st.plotly_chart(
+    revenue_map(country_data),
+    use_container_width=True
+)
+
+
+# BOTTOM CHARTS
+
 col1, col2 = st.columns(2)
 
 with col1:
     st.plotly_chart(
-        revenue_by_country_map(country_data),
+        top_countries_chart(country_data),
         use_container_width=True
     )
 
 with col2:
     st.plotly_chart(
-        top_countries_revenue(country_data),
+        customers_country_chart(country_data),
         use_container_width=True
     )
-
-st.plotly_chart(
-    customers_by_country(country_data),
-    use_container_width=True
-)
-
-
 
 # ============================================================
 # 9. CANCELLATION ANALYTICS
