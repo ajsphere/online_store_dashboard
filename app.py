@@ -651,74 +651,47 @@ render_charts(df_sales)
 
 st.subheader("🌍 Geographical Analysis")
 
-country_data = prepare_country_data(df_sales)
+try:
+    # Përgatitja e të dhënave gjeografike nga DataFrame-i i filtruar
+    geo_data = prepare_country_data(df_sales)
+    geo_kpis = get_geographical_kpis(geo_data)
 
-geo_kpis = get_geographical_kpis(country_data)
+    # Shfaqja e KPI-ve në formë kartelash krah për krah
+    kpi_col1, kpi_col2, kpi_col3 = st.columns(3)
 
+    with kpi_col1:
+        st.metric(label="Active Markets", value=f"{geo_kpis['countries']}")
 
-# KPI CARDS
+    with kpi_col2:
+        st.metric(label="Top Country Performance", value=geo_kpis['top_country'])
 
-col1, col2, col3 = st.columns(3)
+    with kpi_col3:
+        st.metric(label="Geographic Revenue", value=f"GBP {geo_kpis['revenue']:,.2f}")
 
-with col1:
-    st.metric(
-        "🌎 Countries",
-        geo_kpis["countries"]
-    )
+    # Shfaqja e Hartës Qendrore brenda një kartele të pastër
+    st.write("") 
+    with st.container(border=True): 
+        st.markdown("**Revenue Distribution Map**")
+        fig_map = revenue_map(geo_data)
+        st.plotly_chart(fig_map, use_container_width=True, key="geo_revenue_map_v3")
 
-with col2:
-    st.metric(
-        "🏆 Top Country",
-        geo_kpis["top_country"]
-    )
+    # Shfaqja e dy Grafikëve në fund për të mbushur hapësirën boshe
+    chart_col1, chart_col2 = st.columns(2)
 
-with col3:
-    st.metric(
-        "💷 Geographic Revenue",
-        f"GBP {geo_kpis['revenue']:,.2f}"
-    )
+    with chart_col1:
+        with st.container(border=True):
+            st.markdown("**Top Countries by Revenue Volume**")
+            fig_top_countries = top_countries_chart(geo_data)
+            st.plotly_chart(fig_top_countries, use_container_width=True, key="top_countries_bar_v3")
 
+    with chart_col2:
+        with st.container(border=True):
+            st.markdown("**Customer Density Breakdown**")
+            fig_customers = customers_country_chart(geo_data)
+            st.plotly_chart(fig_customers, use_container_width=True, key="customers_density_bar_v3")
 
-# WORLD MAP
-
-st.plotly_chart(
-    revenue_map(country_data),
-    use_container_width=True
-)
-
-
-# BOTTOM CHARTS
-
-col1, col2 = st.columns(2)
-
-with col1:
-    st.plotly_chart(
-        top_countries_chart(country_data),
-        use_container_width=True
-    )
-
-with col2:
-    st.plotly_chart(
-        customers_country_chart(country_data),
-        use_container_width=True
-    )
-
-# ============================================================
-# 9. CANCELLATION ANALYTICS
-# ============================================================
-
-show_cancellation_analytics = st.sidebar.checkbox(
-    "Show cancellation analytics",
-    value=False,
-)
-
-if show_cancellation_analytics:
-    if not df_cancel_source.empty:
-        render_cancelled_dashboard(df_cancel_source)
-    else:
-        st.info(
-            "No cancellation data matches the selected filters."
-        )
+except Exception as error:
+    st.error(f"Could not render geographical analysis: {error}")
 
 
 # ============================================================
