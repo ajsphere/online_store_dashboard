@@ -89,7 +89,20 @@ The sales analytics focus on business questions, not just visuals:
 - Repeat Customer Value Map
 - Manager Health Snapshot
 
-### 6. Cancellation Analytics
+### 6. Geographical Analysis
+
+The dashboard includes geographical analysis to understand business performance across different countries.
+
+This section provides:
+
+- revenue analysis by country
+- interactive geographical revenue map
+- top revenue markets
+- customer distribution across countries
+
+These insights help identify high-performing markets and understand regional customer behavior.
+
+### 7. Cancellation Analytics
 
 The dashboard also includes an optional cancellation analysis area to help identify operational loss and quality issues.
 
