@@ -6,16 +6,15 @@ def prepare_country_data(df):
     """
     Prepare data for geographical analysis
     """
-
     country_data = (
-        df.groupby("Country")
-        .agg(
-            Revenue=("TotalPrice", "sum"),
-            Orders=("InvoiceNo", "nunique"),
-            Customers=("CustomerID", "nunique")
-        )
-        .reset_index()
+    df.groupby("Country")
+    .agg(
+        Revenue=("TotalPrice", "sum"),
+        Orders=("Invoice", "nunique"),
+        Customers=("Customer ID", "nunique")
     )
+    .reset_index()
+)
 
     return country_data
 
