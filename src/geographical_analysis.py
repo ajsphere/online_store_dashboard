@@ -127,7 +127,7 @@ def customer_distribution(country_data: pd.DataFrame):
 def render_geographical_dashboard(df: pd.DataFrame):
 
     st.markdown("---")
-    st.subheader("🌍 Geographical Analysis")
+    st.subheader("Geographical Analysis")
 
     country_data = prepare_country_data(df)
 
