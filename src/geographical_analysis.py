@@ -4,9 +4,6 @@ import plotly.express as px
 
 
 def prepare_country_data(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Prepare country-level metrics for geographical analysis.
-    """
 
     country_data = (
         df.groupby("Country", as_index=False)
@@ -22,6 +19,8 @@ def prepare_country_data(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     return country_data
+
+
 def revenue_by_country_map(country_data: pd.DataFrame):
 
     fig = px.choropleth(
@@ -55,31 +54,7 @@ def revenue_by_country_map(country_data: pd.DataFrame):
 
     return fig
 
-def render_geographical_dashboard(df: pd.DataFrame):
 
-    st.markdown("---")
-st.subheader("Geographical Analysis")
-
-country_data = prepare_country_data(df)
-
-st.plotly_chart(
-    revenue_by_country_map(country_data),
-    use_container_width=True,
-)
-
-left, right = st.columns(2)
-
-with left:
-    st.plotly_chart(
-        top_revenue_markets(country_data),
-        use_container_width=True,
-    )
-
-with right:
-    st.plotly_chart(
-        customer_distribution(country_data),
-        use_container_width=True,
-    )
 def top_revenue_markets(country_data: pd.DataFrame):
 
     top10 = (
@@ -113,6 +88,8 @@ def top_revenue_markets(country_data: pd.DataFrame):
     )
 
     return fig
+
+
 def customer_distribution(country_data: pd.DataFrame):
 
     top10 = (
@@ -145,3 +122,30 @@ def customer_distribution(country_data: pd.DataFrame):
     )
 
     return fig
+
+
+def render_geographical_dashboard(df: pd.DataFrame):
+
+    st.markdown("---")
+    st.subheader("🌍 Geographical Analysis")
+
+    country_data = prepare_country_data(df)
+
+    st.plotly_chart(
+        revenue_by_country_map(country_data),
+        use_container_width=True,
+    )
+
+    left, right = st.columns(2)
+
+    with left:
+        st.plotly_chart(
+            top_revenue_markets(country_data),
+            use_container_width=True,
+        )
+
+    with right:
+        st.plotly_chart(
+            customer_distribution(country_data),
+            use_container_width=True,
+        )
