@@ -1,29 +1,52 @@
-import pandas as pd
 import plotly.express as px
 
 
 def prepare_country_data(df):
     """
-    Prepare data for geographical analysis
+    Prepare geographical analysis data
     """
+
     country_data = (
-    df.groupby("Country")
-    .agg(
-        Revenue=("TotalPrice", "sum"),
-        Orders=("Invoice", "nunique"),
-        Customers=("Customer ID", "nunique")
+        df.groupby("Country")
+        .agg(
+            Revenue=("TotalPrice", "sum"),
+            Orders=("Invoice", "nunique"),
+            Customers=("Customer ID", "nunique")
+        )
+        .reset_index()
     )
-    .reset_index()
-)
 
     return country_data
 
 
 
-def revenue_by_country_map(country_data):
+def get_geographical_kpis(country_data):
     """
-    World map - Revenue by Country
+    Calculate geographical KPIs
     """
+
+    total_countries = country_data["Country"].nunique()
+
+    top_country = (
+        country_data
+        .sort_values(
+            "Revenue",
+            ascending=False
+        )
+        .iloc[0]["Country"]
+    )
+
+    total_revenue = country_data["Revenue"].sum()
+
+    return {
+        "countries": total_countries,
+        "top_country": top_country,
+        "revenue": total_revenue
+    }
+
+
+
+def revenue_map(country_data):
 
     fig = px.choropleth(
         country_data,
@@ -31,26 +54,29 @@ def revenue_by_country_map(country_data):
         locationmode="country names",
         color="Revenue",
         hover_name="Country",
-        hover_data=[
-            "Revenue",
-            "Orders",
-            "Customers"
-        ],
-        title="Revenue by Country"
+        hover_data={
+            "Revenue": ":,.2f",
+            "Orders": True,
+            "Customers": True
+        },
+        title="Revenue Distribution by Country"
     )
 
     fig.update_layout(
-        height=500
+        height=550,
+        margin=dict(
+            l=0,
+            r=0,
+            t=50,
+            b=0
+        )
     )
 
     return fig
 
 
 
-def top_countries_revenue(country_data):
-    """
-    Top 10 countries by revenue
-    """
+def top_countries_chart(country_data):
 
     top10 = (
         country_data
@@ -80,10 +106,7 @@ def top_countries_revenue(country_data):
 
 
 
-def customers_by_country(country_data):
-    """
-    Customers by Country
-    """
+def customers_country_chart(country_data):
 
     top10 = (
         country_data
@@ -96,13 +119,17 @@ def customers_by_country(country_data):
 
     fig = px.bar(
         top10,
-        x="Country",
-        y="Customers",
+        x="Customers",
+        y="Country",
+        orientation="h",
         title="Customers by Country"
     )
 
     fig.update_layout(
-        height=400
+        height=400,
+        yaxis={
+            "categoryorder": "total ascending"
+        }
     )
 
     return fig

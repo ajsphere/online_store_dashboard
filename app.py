@@ -650,8 +650,6 @@ render_charts(df_sales)
 
 st.subheader("🌍 Geographical Analysis")
 
-st.write(df_sales.columns.tolist())
-
 country_data = prepare_country_data(df_sales)
 
 col1, col2 = st.columns(2)
