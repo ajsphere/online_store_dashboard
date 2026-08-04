@@ -17,6 +17,13 @@ from src.kpi_cards import render_kpi_cards
 from src.charts import render_charts
 from src.cancelled_analysis import render_cancelled_dashboard
 
+from src.geographical_analysis import (
+    prepare_country_data,
+    revenue_by_country_map,
+    top_countries_revenue,
+    customers_by_country
+)
+
 
 # ============================================================
 # PAGE CONFIGURATION
@@ -636,6 +643,34 @@ render_kpi_cards(
 # ============================================================
 
 render_charts(df_sales)
+
+# ============================================================
+# 9. GEOGRAPHICAL ANALYTICS
+# ============================================================
+
+st.subheader("🌍 Geographical Analysis")
+
+country_data = prepare_country_data(df_sales)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.plotly_chart(
+        revenue_by_country_map(country_data),
+        use_container_width=True
+    )
+
+with col2:
+    st.plotly_chart(
+        top_countries_revenue(country_data),
+        use_container_width=True
+    )
+
+st.plotly_chart(
+    customers_by_country(country_data),
+    use_container_width=True
+)
+
 
 
 # ============================================================
